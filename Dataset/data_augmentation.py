@@ -42,7 +42,7 @@ def resize_all_images(path, size=(220, 220)):
             f.write(str_coord_bb)
 
 
-def extending_dataset(path, size=(220, 220)):
+def extending_dataset(path_in,path_out, size=(220, 220)):
     """
     This function is necessary for balancing the dataset,
      i.e., so that the number of images of different classes is approximately the same.
@@ -50,9 +50,9 @@ def extending_dataset(path, size=(220, 220)):
     :param size: size image
     :return:
     """
-    images = [file for file in os.listdir(path) if file.endswith('jpg')]
+    images = [file for file in os.listdir(path_in) if file.endswith('jpg')]
     for image in images:
-        path_to_file = os.path.join(path,image)[:-4]
+        path_to_file = os.path.join(path_in,image)[:-4]
 
         with open(path_to_file+'.txt', 'r') as f:
             class_number, xmin, ymin, xmax, ymax = map(int, f.read().split())
@@ -81,15 +81,15 @@ def extending_dataset(path, size=(220, 220)):
 
 
             im = Image.fromarray(img_aug)
-            im.save(os.path.join(path,  image[:-4] + f'_{number_of_aug}' + image[-4:]))
+            im.save(os.path.join(path_out,  image[:-4] + f'_{number_of_aug}' + image[-4:]))
 
-            with open(os.path.join(path, image[:-4] + f'_{number_of_aug}' + '.txt'), 'w') as f:
+            with open(os.path.join(path_out, image[:-4] + f'_{number_of_aug}' + '.txt'), 'w') as f:
                 f.write(str_coord_aug_bb)
 
         im = Image.fromarray(img)
-        im.save(os.path.join(path, image))
+        im.save(os.path.join(path_out, image))
         str_coord_bb = f'{class_number} {xmin} {ymin} {xmax} {ymax}'
-        with open(os.path.join(path, image[:-4] + '.txt'), 'w') as f:
+        with open(os.path.join(path_out, image[:-4] + '.txt'), 'w') as f:
             f.write(str_coord_bb)
 
 
@@ -116,4 +116,4 @@ if __name__ == '__main__':
     # create_xml_annotation('C:\\Users\\adels\PycharmProjects\ObjectDetection&Localization\Dataset\\annotation_template')
     # print(type(ia.quokka(size=(256, 256))))
     # resize_all_images('C:\\Users\\adels\PycharmProjects\datasets\cats_dogs_220')
-    extending_dataset('C:\\Users\\adels\PycharmProjects\datasets\cats_dogs_220')
+    extending_dataset('C:\\Users\\adels\PycharmProjects\datasets\cats_dogs_220','C:\\Users\\adels\PycharmProjects\datasets\cats_dogs_220_balanced')
