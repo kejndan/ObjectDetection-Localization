@@ -53,11 +53,11 @@ def calc_precision_recall(predict, ground_truth):
     false_positive = torch.logical_and(correct_predict == False, ground_truth == 0)
     false_negative = torch.logical_and(correct_predict == False, ground_truth == 1)
 
-    temp1 = (true_positive + false_positive).sum()
-    temp2 = (true_positive + false_negative).sum()
+    temp1 = (true_positive + false_positive).sum().item()
+    temp2 = (true_positive + false_negative).sum().item()
 
-    precision = true_positive.sum()/temp1 if temp1 != 0 else 1
-    recall = true_positive.sum()/temp2 if temp2 != 0 else 1
+    precision = true_positive.sum().item()/temp1 if temp1 != 0 else 1
+    recall = true_positive.sum().item()/temp2 if temp2 != 0 else 1
 
 
     return precision, recall

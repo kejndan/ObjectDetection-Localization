@@ -10,10 +10,10 @@ import os
 import time
 
 def train(model, criterion, optimizer, cfg):
-    ds_train = CatsDogs(cfg.path_to_dataset, cfg, work_mode='train', transform_mode='train')
+    ds_train = CatsDogs(cfg.path_to_dataset, cfg, work_mode='train')
     dl_train = DataLoader(ds_train, batch_size=cfg.batch_size)
 
-    ds_valid = CatsDogs(cfg.path_to_dataset, cfg, work_mode='valid', transform_mode='test')
+    ds_valid = CatsDogs(cfg.path_to_dataset, cfg, work_mode='valid')
     dl_valid = DataLoader(ds_valid, batch_size=32, shuffle=True)
 
 

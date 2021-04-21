@@ -7,7 +7,7 @@ from torchvision import transforms
 
 
 class CatsDogs(torch.utils.data.Dataset):
-    def __init__(self, path, cfg, split_by = 'file', work_mode='train'):
+    def __init__(self, path, cfg, split_by = 'file', work_mode='train', framework='torch'):
         """
         This class is used to create a dataset.
         :param path: path to images and annotations
@@ -17,12 +17,13 @@ class CatsDogs(torch.utils.data.Dataset):
          @valid - the part of the dataset where the selection of hyperparameters and other settings
          @test - the part of the dataset where the final accuracy will be measured
          @full_test - this is a combination of the validation and testing parts, if you don't need separation
-        :param transform_mode: for selection augmentation
+        :param framework: PyTorch/NumPy
         """
         self.path_to_dataset = path
         self.path_dir = path + '\imgs'
         self.work_mode = work_mode
         self.cfg = cfg
+        self.framework = framework
 
         self.paths_to_imgs = []
         self.__get_paths_to('.jpg', self.paths_to_imgs)
@@ -139,14 +140,25 @@ class CatsDogs(torch.utils.data.Dataset):
         return len(self.target)
 
     def __getitem__(self, idx):
-        img = Image.open(self.imgs[idx])
-        if len(list(img.split())) != 3:
-            img = img.convert('RGB')
-        img = self.apply_augmentation(img)
-        with open(self.target[idx],'r') as f:
-            target = np.array(f.read().split()).astype('int32')
-        target[0] -= 1
-        return img, torch.Tensor(target)
+        if self.framework == 'torch':
+            img = Image.open(self.imgs[idx])
+            if len(list(img.split())) != 3:
+                img = img.convert('RGB')
+            img = self.apply_augmentation(img)
+            with open(self.target[idx],'r') as f:
+                target = np.array(f.read().split()).astype('int32')
+            target[0] -= 1
+            return img, torch.Tensor(target)
+        elif self.framework == 'numpy':
+            img = Image.open(self.imgs[idx])
+            if len(list(img.split())) != 3:
+                img = img.convert('RGB')
+            img = (img - self.means)/self.stds
+            with open(self.target[idx],'r') as f:
+                target = np.array(f.read().split()).astype('int32')
+            target[0] -= 1
+            img = img.reshape((3,220, 220))
+            return img, target
 
     def apply_augmentation(self, img):
         transforms_ = transforms.Compose([

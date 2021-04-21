@@ -20,7 +20,7 @@ cfg.ROP_patience = 5
 cfg.ROP_factor = 0.1
 
 
-cfg.name_experiment = 'Final_union'
+cfg.name_experiment = 'Final_union_v1'
 
 cfg.path_to_dataset = 'C:\\Users\\adels\PycharmProjects\datasets\cats_dogs_220_ext'
 cfg.path_to_logs = os.path.join('C:\\Users\\adels\PycharmProjects\ObjectDetection&Localization',

@@ -16,7 +16,6 @@ class ConvNet_w_MN_1(torch.nn.Module):
         x = self.features(input)
         x = self.avgpool(x)
         x = x.view(input.size(0),-1)
-        x = self.linear1(x)
         coords = self.linear_localize(x)
         classes = self.linear_classify(x)
         return torch.cat((classes, coords),axis=1)
